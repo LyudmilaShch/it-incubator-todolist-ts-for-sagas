@@ -29,8 +29,9 @@ export const todolistsAPI = {
         const promise = instance.put<ResponseType>(`todo-lists/${id}`, {title: title});
         return promise;
     },
-    getTasks(todolistId: string):Promise<AxiosResponse<GetTasksResponse>> {
-        return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`);
+    getTasks(todolistId: string):Promise<GetTasksResponse> {
+        return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
+            .then(res => res.data);
     },
     deleteTask(todolistId: string, taskId: string):Promise<AxiosResponse<ResponseType>>  {
         return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`);
@@ -51,6 +52,7 @@ export type LoginParamsType = {
     captcha?: string
 }
 
+export type MeResponseType = ResponseType<{ id: number; email: string; login: string }>;
 export const authAPI = {
     login(data: LoginParamsType) {
         const promise = instance.post<ResponseType<{userId?: number}>>('auth/login', data);
@@ -61,7 +63,7 @@ export const authAPI = {
         return promise;
     },
     me() {
-       const promise =  instance.get<ResponseType<{id: number; email: string; login: string}>>('auth/me');
+       const promise =  instance.get<MeResponseType>('auth/me').then(res => res.data);
        return promise
     }
 }
